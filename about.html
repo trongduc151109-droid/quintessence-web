@@ -30,27 +30,38 @@
       href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap&subset=vietnamese"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+(function () {
+  try {
+    const savedTheme = localStorage.getItem("qt-theme");
+    const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.dataset.theme = savedTheme || (prefersLight ? "light" : "dark");
+  } catch (error) {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
               void: {
-                950: "#07040F",
-                900: "#0D0817",
-                800: "#161022",
-                700: "#221A33",
+                950: "rgb(var(--void-950) / <alpha-value>)",
+                900: "rgb(var(--void-900) / <alpha-value>)",
+                800: "rgb(var(--void-800) / <alpha-value>)",
+                700: "rgb(var(--void-700) / <alpha-value>)",
               },
               arcane: {
-                300: "#C4B5FD",
-                400: "#A78BFA",
-                500: "#8B5CF6",
-                600: "#7C3AED",
+                300: "rgb(var(--arcane-300) / <alpha-value>)",
+                400: "rgb(var(--arcane-400) / <alpha-value>)",
+                500: "rgb(var(--arcane-500) / <alpha-value>)",
+                600: "rgb(var(--arcane-600) / <alpha-value>)",
               },
-              spectral: { 300: "#A5F3FC", 400: "#67E8F9", 500: "#22D3EE" },
-              miasma: { 500: "#E11D48" },
-              ink: { 100: "#F4F1FA", 300: "#AEA5C8", 500: "#6F6783" },
+              spectral: { 300: "rgb(var(--spectral-300) / <alpha-value>)", 400: "rgb(var(--spectral-400) / <alpha-value>)", 500: "rgb(var(--spectral-500) / <alpha-value>)" },
+              miasma: { 500: "rgb(var(--miasma-500) / <alpha-value>)" },
+              ink: { 100: "rgb(var(--ink-100) / <alpha-value>)", 300: "rgb(var(--ink-300) / <alpha-value>)", 500: "rgb(var(--ink-500) / <alpha-value>)" },
             },
             fontFamily: {
               display: ["Be Vietnam Pro", "system-ui", "sans-serif"],
@@ -68,7 +79,106 @@
       };
     </script>
     <style>
-      ::selection {
+:root {
+  color-scheme: dark;
+  --void-950: 7 4 15;
+  --void-900: 13 8 23;
+  --void-800: 22 16 34;
+  --void-700: 34 26 51;
+  --arcane-300: 196 181 253;
+  --arcane-400: 167 139 250;
+  --arcane-500: 139 92 246;
+  --arcane-600: 124 58 237;
+  --spectral-300: 165 243 252;
+  --spectral-400: 103 232 249;
+  --spectral-500: 34 211 238;
+  --miasma-500: 225 29 72;
+  --ink-100: 244 241 250;
+  --ink-300: 174 165 200;
+  --ink-500: 111 103 131;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --void-950: 249 246 239;
+  --void-900: 255 251 243;
+  --void-800: 238 231 219;
+  --void-700: 206 193 174;
+  --arcane-300: 99 84 174;
+  --arcane-400: 124 92 199;
+  --arcane-500: 139 92 246;
+  --arcane-600: 103 58 183;
+  --spectral-300: 12 123 145;
+  --spectral-400: 14 148 174;
+  --spectral-500: 8 126 149;
+  --miasma-500: 190 18 60;
+  --ink-100: 31 25 45;
+  --ink-300: 85 75 112;
+  --ink-500: 120 108 145;
+}
+.theme-toggle {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  height: 2.35rem;
+  width: 4.15rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(var(--void-700) / 0.72);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 28% 50%, rgb(var(--arcane-500) / 0.32), transparent 31%),
+    radial-gradient(circle at 72% 50%, rgb(var(--spectral-500) / 0.22), transparent 30%),
+    rgb(var(--void-900) / 0.92);
+  box-shadow: inset 0 0 18px rgb(0 0 0 / 0.2), 0 8px 22px rgb(0 0 0 / 0.14);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0.22rem;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent, rgb(var(--spectral-400) / 0.22), transparent);
+  opacity: 0.8;
+}
+.theme-toggle-mark {
+  position: relative;
+  z-index: 1;
+  height: 1.15rem;
+  width: 1.15rem;
+  transform: translateX(-0.86rem) rotate(-18deg);
+  background: conic-gradient(from 20deg, #fde68a, rgb(var(--arcane-400)), rgb(var(--spectral-400)), #fde68a);
+  clip-path: polygon(50% 0, 58% 35%, 94% 20%, 68% 50%, 94% 80%, 58% 65%, 50% 100%, 42% 65%, 6% 80%, 32% 50%, 6% 20%, 42% 35%);
+  filter: drop-shadow(0 0 8px rgb(var(--arcane-400) / 0.6));
+  transition: transform 0.36s ease, border-radius 0.36s ease, clip-path 0.36s ease, background 0.36s ease, filter 0.36s ease;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid rgb(var(--spectral-400));
+  outline-offset: 3px;
+}
+:root[data-theme="light"] .theme-toggle {
+  border-color: rgb(var(--arcane-400) / 0.42);
+  background:
+    radial-gradient(circle at 34% 40%, rgb(253 230 138 / 0.72), transparent 35%),
+    linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--void-800) / 0.7));
+  box-shadow: inset 0 0 14px rgb(255 255 255 / 0.8), 0 8px 20px rgb(124 92 199 / 0.12);
+}
+:root[data-theme="light"] .theme-toggle-mark {
+  transform: translateX(0.86rem) rotate(0deg);
+  border-radius: 999px;
+  background: #fffdf7;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  filter: drop-shadow(0 0 10px rgb(245 158 11 / 0.45));
+}
+.mobile-theme-toggle {
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 639px) {
+  .site-theme-toggle { display: none; }
+}
+@media (min-width: 640px) {
+  .mobile-theme-toggle { display: none; }
+}
+::selection {
         background: rgba(139, 92, 246, 0.35);
         color: #fff;
       }
@@ -176,8 +286,8 @@
               >
                 <defs>
                   <linearGradient id="sigilGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#A78BFA" />
-                    <stop offset="100%" stop-color="#22D3EE" />
+                    <stop offset="0%" stop-color="rgb(var(--arcane-400) / <alpha-value>)" />
+                    <stop offset="100%" stop-color="rgb(var(--spectral-500) / <alpha-value>)" />
                   </linearGradient>
                 </defs>
                 <circle
@@ -290,11 +400,6 @@
                 <a
                   href="#"
                   class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300"
-                  >Tiến độ dịch</a
-                >
-                <a
-                  href="#"
-                  class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300"
                   >Nội dung bị cắt</a
                 >
                 <a
@@ -315,10 +420,9 @@
             class="reveal flex items-center gap-3"
             style="transition-delay: 0.2s"
           >
-            <a
-              href="https://discord.com/invite/MvyNT5g"
-              target="_blank"
-              rel="noopener"
+            <button type="button" class="theme-toggle site-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
+        <a
+              href="#"
               aria-label="Discord"
               class="hidden h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-spectral-400/60 hover:text-spectral-300 sm:flex"
             >
@@ -334,9 +438,7 @@
               </svg>
             </a>
             <a
-              href="https://www.patreon.com/WCTranslations"
-              target="_blank"
-              rel="noopener"
+              href="#"
               class="rounded-full bg-arcane-500 px-5 py-2 text-sm font-semibold text-void-950 transition-all duration-300 hover:bg-arcane-400 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]"
               >Ủng hộ</a
             >
@@ -384,7 +486,8 @@
           id="mobile-panel"
           class="mobile-panel absolute inset-x-4 top-full mt-2 max-h-[75vh] overflow-y-auto rounded-xl border border-void-700/60 bg-void-900/95 p-6 backdrop-blur-xl md:hidden"
         >
-          <a
+          <button type="button" class="theme-toggle mobile-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
+      <a
             href="toc.html"
             class="block py-2 text-sm font-semibold text-ink-100"
             >Mục lục</a
@@ -408,7 +511,6 @@
             class="mt-2 flex flex-col gap-1 border-l border-void-700/60 pl-4"
           >
             <a href="#" class="py-1.5 text-sm text-ink-300">Bản đồ thế giới</a>
-            <a href="#" class="py-1.5 text-sm text-ink-300">Tiến độ dịch</a>
             <a href="#" class="py-1.5 text-sm text-ink-300">Nội dung bị cắt</a>
             <a href="#" class="py-1.5 text-sm text-ink-300"
               >Quy chuẩn biên tập</a
@@ -418,9 +520,7 @@
             >
           </div>
           <a
-            href="https://www.patreon.com/WCTranslations"
-            target="_blank"
-            rel="noopener"
+            href="#"
             class="mt-6 block rounded-full bg-arcane-500 px-5 py-2.5 text-center text-sm font-semibold text-void-950"
             >Ủng hộ</a
           >
@@ -440,11 +540,7 @@
           >
             Quintessence Translation
           </h1>
-          <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-ink-300">
-            Một dự án dịch fan dành cho độc giả muốn tiếp tục theo dõi Re:Zero
-            bằng tiếng Việt, với giao diện tối, chữ rõ và hệ thống arc gọn gàng
-            hơn.
-          </p>
+          <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-ink-300">Dự án dịch phi lợi nhuận dành cho độc giả Re:Zero Việt Nam, với giao diện rõ ràng và hệ thống arc gọn gàng hơn.</p>
         </div>
       </section>
       <section class="mx-auto max-w-2xl px-6 pb-20">
@@ -459,178 +555,6 @@
           </h2>
         </div>
         <div class="reveal space-y-3">
-          <div
-            class="overflow-hidden rounded-xl border border-void-700/60 bg-void-900/50"
-          >
-            <button
-              type="button"
-              data-accordion-toggle="faq-1"
-              aria-expanded="false"
-              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-void-800/40"
-            >
-              <span class="text-sm font-semibold text-ink-100"
-                >Đây có phải bản dịch chính thức không?</span
-              >
-              <svg
-                class="h-4 w-4 shrink-0 text-ink-500 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <div
-              id="faq-1"
-              class="hidden px-5 pb-5 text-sm leading-relaxed text-ink-300"
-            >
-              Không. Quintessence Translation là dự án fan độc lập, phi thương
-              mại và không đại diện cho tác giả, nhà xuất bản hay đơn vị sở hữu
-              bản quyền.
-            </div>
-          </div>
-          <div
-            class="overflow-hidden rounded-xl border border-void-700/60 bg-void-900/50"
-          >
-            <button
-              type="button"
-              data-accordion-toggle="faq-2"
-              aria-expanded="false"
-              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-void-800/40"
-            >
-              <span class="text-sm font-semibold text-ink-100"
-                >Tại sao dùng phông Be Vietnam Pro?</span
-              >
-              <svg
-                class="h-4 w-4 shrink-0 text-ink-500 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <div
-              id="faq-2"
-              class="hidden px-5 pb-5 text-sm leading-relaxed text-ink-300"
-            >
-              Be Vietnam Pro được thiết kế cho tiếng Việt, nên các dấu như ư, ộ,
-              ắ, ễ hiển thị sạch và ít lỗi hơn khi đọc lâu.
-            </div>
-          </div>
-          <div
-            class="overflow-hidden rounded-xl border border-void-700/60 bg-void-900/50"
-          >
-            <button
-              type="button"
-              data-accordion-toggle="faq-3"
-              aria-expanded="false"
-              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-void-800/40"
-            >
-              <span class="text-sm font-semibold text-ink-100"
-                >Nên bắt đầu đọc từ đâu?</span
-              >
-              <svg
-                class="h-4 w-4 shrink-0 text-ink-500 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <div
-              id="faq-3"
-              class="hidden px-5 pb-5 text-sm leading-relaxed text-ink-300"
-            >
-              Bạn có thể vào mục lục, chọn arc muốn đọc, rồi mở chương trong
-              trang riêng của arc đó.
-            </div>
-          </div>
-          <div
-            class="overflow-hidden rounded-xl border border-void-700/60 bg-void-900/50"
-          >
-            <button
-              type="button"
-              data-accordion-toggle="faq-4"
-              aria-expanded="false"
-              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-void-800/40"
-            >
-              <span class="text-sm font-semibold text-ink-100"
-                >Làm sao theo dõi tiến độ dịch?</span
-              >
-              <svg
-                class="h-4 w-4 shrink-0 text-ink-500 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <div
-              id="faq-4"
-              class="hidden px-5 pb-5 text-sm leading-relaxed text-ink-300"
-            >
-              Trang tiến độ dịch có thể được nối vào menu Thông tin khi bạn có
-              dữ liệu thật. Hiện tại các chương trong bản mẫu dùng nội dung giữ
-              chỗ.
-            </div>
-          </div>
-          <div
-            class="overflow-hidden rounded-xl border border-void-700/60 bg-void-900/50"
-          >
-            <button
-              type="button"
-              data-accordion-toggle="faq-5"
-              aria-expanded="false"
-              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-void-800/40"
-            >
-              <span class="text-sm font-semibold text-ink-100"
-                >Có thể thay nội dung chương thật vào đâu?</span
-              >
-              <svg
-                class="h-4 w-4 shrink-0 text-ink-500 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <div
-              id="faq-5"
-              class="hidden px-5 pb-5 text-sm leading-relaxed text-ink-300"
-            >
-              Hãy thay các đoạn văn bên trong khu vực nội dung chương của
-              reader.html hoặc nối trang với dữ liệu chương riêng sau này.
-            </div>
-          </div>
         </div>
       </section>
       <section class="mx-auto max-w-2xl px-6 pb-32">
@@ -640,11 +564,6 @@
           <h2 class="font-display text-lg font-extrabold text-ink-100">
             Làm bởi độc giả, cho độc giả
           </h2>
-          <p class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-300">
-            Trang được sắp lại để việc đọc và tìm chương nhẹ mắt hơn: arc không
-            bung sẵn chương trên mục lục, chỉ khi chọn arc thì chương mới hiện
-            trong trang riêng.
-          </p>
           <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
             <a
               href="toc.html"
@@ -673,14 +592,11 @@
             >QUINTESSENCE TRANSLATION</span
           >
           <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-300">
-            Dự án dịch fan phi lợi nhuận dành cho độc giả Re:Zero, tập trung vào
-            trải nghiệm đọc rõ ràng, dễ theo dõi và thân thiện với tiếng Việt.
+            Dự án dịch phi lợi nhuận dành cho độc giả Re:Zero Việt Nam.
           </p>
           <div class="mt-6 flex gap-3">
             <a
-              href="https://discord.com/invite/MvyNT5g"
-              target="_blank"
-              rel="noopener"
+              href="#"
               aria-label="Discord"
               class="flex h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-arcane-400/60 hover:text-arcane-300"
               ><svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
@@ -726,19 +642,10 @@
           </h4>
           <ul class="space-y-2 text-sm text-ink-300">
             <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Re:Zero Wiki</a
-              >
+              <a href="https://rezero.fandom.com/wiki/Re:Zero_Wiki" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Re:Zero Wiki</a>
             </li>
             <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Cộng đồng Re:Zero</a
-              >
-            </li>
-            <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Tiến độ dịch</a
-              >
+              <a href="https://www.facebook.com/groups/1199754170205957/" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Cộng đồng Re:Zero Việt Nam</a>
             </li>
           </ul>
         </div>
@@ -751,18 +658,14 @@
           <ul class="space-y-2 text-sm text-ink-300">
             <li>
               <a
-                href="https://discord.com/invite/MvyNT5g"
-                target="_blank"
-                rel="noopener"
+                href="#"
                 class="transition-colors hover:text-spectral-300"
                 >Discord</a
               >
             </li>
             <li>
               <a
-                href="https://www.patreon.com/WCTranslations"
-                target="_blank"
-                rel="noopener"
+                href="#"
                 class="transition-colors hover:text-spectral-300"
                 >Ủng hộ</a
               >
@@ -776,15 +679,7 @@
         </div>
       </div>
       <div class="border-t border-void-700/60">
-        <div
-          class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-6 text-xs text-ink-500 md:flex-row lg:px-8"
-        >
-          <p>
-            Re:Zero © Tappei Nagatsuki. Quintessence Translation là dự án fan
-            độc lập, phi thương mại.
-          </p>
-          <p>Được chăm chút cho những độc giả muốn đọc tiếp câu chuyện.</p>
-        </div>
+        <div class="mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-6 text-center text-xs text-ink-500 lg:px-8"><p>Re:Zero © Tappei Nagatsuki. QuintessenceTranslations © 2026.</p></div>
       </div>
     </footer>
     <script>
@@ -851,5 +746,29 @@
         });
       });
     </script>
-  </body>
+  <script>
+(function () {
+  const root = document.documentElement;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const storageKey = "qt-theme";
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#F9F6EF" : "#07040F");
+    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+      const isLight = theme === "light";
+      button.setAttribute("aria-pressed", String(isLight));
+      button.setAttribute("aria-label", isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng");
+      button.title = isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng";
+    });
+    try { localStorage.setItem(storageKey, theme); } catch (error) {}
+  }
+  setTheme(root.dataset.theme || "dark");
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-theme-toggle]");
+    if (!button) return;
+    setTheme(root.dataset.theme === "light" ? "dark" : "light");
+  });
+})();
+</script>
+</body>
 </html>

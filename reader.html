@@ -27,27 +27,38 @@
       href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap&subset=vietnamese"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+(function () {
+  try {
+    const savedTheme = localStorage.getItem("qt-theme");
+    const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.dataset.theme = savedTheme || (prefersLight ? "light" : "dark");
+  } catch (error) {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
               void: {
-                950: "#07040F",
-                900: "#0D0817",
-                800: "#161022",
-                700: "#221A33",
+                950: "rgb(var(--void-950) / <alpha-value>)",
+                900: "rgb(var(--void-900) / <alpha-value>)",
+                800: "rgb(var(--void-800) / <alpha-value>)",
+                700: "rgb(var(--void-700) / <alpha-value>)",
               },
               arcane: {
-                300: "#C4B5FD",
-                400: "#A78BFA",
-                500: "#8B5CF6",
-                600: "#7C3AED",
+                300: "rgb(var(--arcane-300) / <alpha-value>)",
+                400: "rgb(var(--arcane-400) / <alpha-value>)",
+                500: "rgb(var(--arcane-500) / <alpha-value>)",
+                600: "rgb(var(--arcane-600) / <alpha-value>)",
               },
-              spectral: { 300: "#A5F3FC", 400: "#67E8F9", 500: "#22D3EE" },
-              miasma: { 500: "#E11D48" },
-              ink: { 100: "#F4F1FA", 300: "#AEA5C8", 500: "#6F6783" },
+              spectral: { 300: "rgb(var(--spectral-300) / <alpha-value>)", 400: "rgb(var(--spectral-400) / <alpha-value>)", 500: "rgb(var(--spectral-500) / <alpha-value>)" },
+              miasma: { 500: "rgb(var(--miasma-500) / <alpha-value>)" },
+              ink: { 100: "rgb(var(--ink-100) / <alpha-value>)", 300: "rgb(var(--ink-300) / <alpha-value>)", 500: "rgb(var(--ink-500) / <alpha-value>)" },
             },
             fontFamily: {
               display: ["Be Vietnam Pro", "system-ui", "sans-serif"],
@@ -65,7 +76,106 @@
       };
     </script>
     <style>
-      ::selection {
+:root {
+  color-scheme: dark;
+  --void-950: 7 4 15;
+  --void-900: 13 8 23;
+  --void-800: 22 16 34;
+  --void-700: 34 26 51;
+  --arcane-300: 196 181 253;
+  --arcane-400: 167 139 250;
+  --arcane-500: 139 92 246;
+  --arcane-600: 124 58 237;
+  --spectral-300: 165 243 252;
+  --spectral-400: 103 232 249;
+  --spectral-500: 34 211 238;
+  --miasma-500: 225 29 72;
+  --ink-100: 244 241 250;
+  --ink-300: 174 165 200;
+  --ink-500: 111 103 131;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --void-950: 249 246 239;
+  --void-900: 255 251 243;
+  --void-800: 238 231 219;
+  --void-700: 206 193 174;
+  --arcane-300: 99 84 174;
+  --arcane-400: 124 92 199;
+  --arcane-500: 139 92 246;
+  --arcane-600: 103 58 183;
+  --spectral-300: 12 123 145;
+  --spectral-400: 14 148 174;
+  --spectral-500: 8 126 149;
+  --miasma-500: 190 18 60;
+  --ink-100: 31 25 45;
+  --ink-300: 85 75 112;
+  --ink-500: 120 108 145;
+}
+.theme-toggle {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  height: 2.35rem;
+  width: 4.15rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(var(--void-700) / 0.72);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 28% 50%, rgb(var(--arcane-500) / 0.32), transparent 31%),
+    radial-gradient(circle at 72% 50%, rgb(var(--spectral-500) / 0.22), transparent 30%),
+    rgb(var(--void-900) / 0.92);
+  box-shadow: inset 0 0 18px rgb(0 0 0 / 0.2), 0 8px 22px rgb(0 0 0 / 0.14);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0.22rem;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent, rgb(var(--spectral-400) / 0.22), transparent);
+  opacity: 0.8;
+}
+.theme-toggle-mark {
+  position: relative;
+  z-index: 1;
+  height: 1.15rem;
+  width: 1.15rem;
+  transform: translateX(-0.86rem) rotate(-18deg);
+  background: conic-gradient(from 20deg, #fde68a, rgb(var(--arcane-400)), rgb(var(--spectral-400)), #fde68a);
+  clip-path: polygon(50% 0, 58% 35%, 94% 20%, 68% 50%, 94% 80%, 58% 65%, 50% 100%, 42% 65%, 6% 80%, 32% 50%, 6% 20%, 42% 35%);
+  filter: drop-shadow(0 0 8px rgb(var(--arcane-400) / 0.6));
+  transition: transform 0.36s ease, border-radius 0.36s ease, clip-path 0.36s ease, background 0.36s ease, filter 0.36s ease;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid rgb(var(--spectral-400));
+  outline-offset: 3px;
+}
+:root[data-theme="light"] .theme-toggle {
+  border-color: rgb(var(--arcane-400) / 0.42);
+  background:
+    radial-gradient(circle at 34% 40%, rgb(253 230 138 / 0.72), transparent 35%),
+    linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--void-800) / 0.7));
+  box-shadow: inset 0 0 14px rgb(255 255 255 / 0.8), 0 8px 20px rgb(124 92 199 / 0.12);
+}
+:root[data-theme="light"] .theme-toggle-mark {
+  transform: translateX(0.86rem) rotate(0deg);
+  border-radius: 999px;
+  background: #fffdf7;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  filter: drop-shadow(0 0 10px rgb(245 158 11 / 0.45));
+}
+.mobile-theme-toggle {
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 639px) {
+  .site-theme-toggle { display: none; }
+}
+@media (min-width: 640px) {
+  .mobile-theme-toggle { display: none; }
+}
+::selection {
         background: rgba(139, 92, 246, 0.35);
         color: #fff;
       }
@@ -173,8 +283,8 @@
               >
                 <defs>
                   <linearGradient id="sigilGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#A78BFA" />
-                    <stop offset="100%" stop-color="#22D3EE" />
+                    <stop offset="0%" stop-color="rgb(var(--arcane-400) / <alpha-value>)" />
+                    <stop offset="100%" stop-color="rgb(var(--spectral-500) / <alpha-value>)" />
                   </linearGradient>
                 </defs>
                 <circle
@@ -287,11 +397,6 @@
                 <a
                   href="#"
                   class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300"
-                  >Tiến độ dịch</a
-                >
-                <a
-                  href="#"
-                  class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300"
                   >Nội dung bị cắt</a
                 >
                 <a
@@ -312,10 +417,9 @@
             class="reveal flex items-center gap-3"
             style="transition-delay: 0.2s"
           >
-            <a
-              href="https://discord.com/invite/MvyNT5g"
-              target="_blank"
-              rel="noopener"
+            <button type="button" class="theme-toggle site-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
+        <a
+              href="#"
               aria-label="Discord"
               class="hidden h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-spectral-400/60 hover:text-spectral-300 sm:flex"
             >
@@ -331,9 +435,7 @@
               </svg>
             </a>
             <a
-              href="https://www.patreon.com/WCTranslations"
-              target="_blank"
-              rel="noopener"
+              href="#"
               class="rounded-full bg-arcane-500 px-5 py-2 text-sm font-semibold text-void-950 transition-all duration-300 hover:bg-arcane-400 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]"
               >Ủng hộ</a
             >
@@ -381,7 +483,8 @@
           id="mobile-panel"
           class="mobile-panel absolute inset-x-4 top-full mt-2 max-h-[75vh] overflow-y-auto rounded-xl border border-void-700/60 bg-void-900/95 p-6 backdrop-blur-xl md:hidden"
         >
-          <a
+          <button type="button" class="theme-toggle mobile-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
+      <a
             href="toc.html"
             class="block py-2 text-sm font-semibold text-ink-100"
             >Mục lục</a
@@ -405,7 +508,6 @@
             class="mt-2 flex flex-col gap-1 border-l border-void-700/60 pl-4"
           >
             <a href="#" class="py-1.5 text-sm text-ink-300">Bản đồ thế giới</a>
-            <a href="#" class="py-1.5 text-sm text-ink-300">Tiến độ dịch</a>
             <a href="#" class="py-1.5 text-sm text-ink-300">Nội dung bị cắt</a>
             <a href="#" class="py-1.5 text-sm text-ink-300"
               >Quy chuẩn biên tập</a
@@ -415,9 +517,7 @@
             >
           </div>
           <a
-            href="https://www.patreon.com/WCTranslations"
-            target="_blank"
-            rel="noopener"
+            href="#"
             class="mt-6 block rounded-full bg-arcane-500 px-5 py-2.5 text-center text-sm font-semibold text-void-950"
             >Ủng hộ</a
           >
@@ -551,436 +651,9 @@
               class="rounded-xl border border-void-700/60 bg-void-900/50 px-4 py-3 text-sm leading-normal text-ink-500"
             ></p>
             <p>
-              "——Quả nhiên là phong cách của cô nàng công chúa đó. Đến tận phút
-              cuối cùng vẫn cứ khăng khăng làm theo ý mình." Nhấp một ngụm trà,
-              Felt thốt ra lời đó khiến Emilia khẽ rủ hàng mi. Ngồi đối diện
-              trên chiếc ghế sofa tiếp khách, Felt đang bó gối, chăm chú lắng
-              nghe câu chuyện của Emilia từ đầu đến cuối mà không hề ngắt lời.
-              Cô bé thương tiếc Priscilla theo cách riêng của mình. Đôi mắt Felt
-              mang sắc đỏ hơi khác với Priscilla, nhưng trong đó không hề thoáng
-              qua sự bi lụy hay mất mát quá mức. Emilia không cho rằng đó là sự
-              bạc tình, mà chỉ cảm thấy Felt thật mạnh mẽ. Mạnh mẽ khi chủ động
-              tìm đến đây để nghe chi tiết về cáo phó của Priscilla. Hiện tại,
-              Emilia và Felt đang gặp nhau tại một căn phòng trong Vương hầu
-              quán ở vương đô Lugnica. Đây là nơi dành cho các yếu nhân lưu trú
-              khi tới vương đô, và Emilia đang tiếp đón Felt tại phòng khách
-              này. Họ không hề hẹn trước. Chỉ là Felt tình cờ đang ở vương đô,
-              nghe tin Emilia mang thông báo vào hoàng thành nên đã ghé qua
-              thăm. Thật lòng mà nói, Emilia rất vui khi Felt đến. Hơn nữa, phe
-              Emilia còn nợ Felt một ân huệ lớn —— theo lời Annerose, trong thời
-              gian họ vắng mặt ở vương quốc, Meili đã được Felt giúp đỡ rất
-              nhiều. Annerose, thân tộc của Roswaal và là người ủng hộ Emilia,
-              đã đứng ra đàm phán về các vấn đề xoay quanh Meili và Tòa tháp
-              giám sát Pleiades. Có vẻ như phe Felt đã hỗ trợ rất nhiều để cuộc
-              đàm phán đó thành công. Vì thế, Emilia vốn đã định dành thời gian
-              đi cảm ơn Felt, nên cuộc gặp gỡ này thật sự là một sự trợ giúp
-              lớn. Chỉ là, nếu có thể, cô ước mình mang về được một câu chuyện
-              tốt đẹp hơn... "——Chị đang trưng ra cái bộ mặt kiểu như 'giá mà
-              chuyện không thành ra thế này' đấy, chị Emilia." "Ơ, mặt chị dễ
-              đoán thế sao?" "Rõ mồn một luôn. Nhìn cái kiểu cau mày rồi cúi gằm
-              mặt xuống thế kia thì ai chẳng biết." Felt vừa nói vừa lấy ngón
-              tay gõ nhẹ vào giữa lông mày mình, khiến Emilia cũng vô thức đưa
-              tay lên xoa trán. Mọi người vẫn thường bảo cô là người dễ lộ tâm
-              sự ra mặt, nhưng lộ rõ đến mức này thì chính cô cũng thấy ngạc
-              nhiên. Và cả lo lắng nữa. ——Vì cô đã tự dặn lòng phải mạnh mẽ đứng
-              dậy, phải tỏ ra ổn thỏa để không ai phải lo lắng cho mình. "Vậy mà
-              vẫn không được nhỉ. Thế này thì chắc chắn sẽ bị Subaru mắng cho
-              xem." "Anh chàng đó mà cũng dám dựng ngược lông nhím với chị á?
-              Tôi chẳng tưởng tượng nổi luôn." "Không có chuyện đó đâu. Subaru
-              cũng cần chị phải thật vững vàng mà. Thế nên những điểm chưa tốt
-              của chị, cậu ấy đều nói thẳng ra hết." "Hừm, thực tế thì để xem đã
-              nhé." Nói rồi, Felt tựa cằm lên đầu gối, để lộ chiếc răng khểnh
-              đặc trưng. Trước nụ cười có phần trêu chọc và tinh quái của Felt,
-              Emilia khẽ bĩu môi, rồi tiếp lời: "Felt-chan đã nhìn thấu hết suy
-              nghĩ của chị rồi... nhưng em không thấy phiền sao?" "Hơi rắc rối
-              chút, ý chị là chuyện lâu ngày mới gặp mà lại lôi cái cáo phó của
-              cô nàng công chúa đó ra nói nên thấy có lỗi hả?" "À, ừm... đúng
-              thế. Đúng là vậy đó." "Về chuyện đó thì tôi lại thấy mừng vì được
-              nghe từ chính miệng chị, chị Emilia ạ." "Nghe từ chị?" Trước sự
-              ngạc nhiên của Emilia, Felt gật đầu xác nhận. Cô bé vừa gãi đầu
-              vừa nói tiếp: "Thú thực, khi nghe tin cô nàng công chúa đó chết,
-              tôi cứ ngỡ là trò đùa cơ. Loại đàn bà đó có bị giết cũng chẳng
-              chết nổi đâu. Nếu cứ để thế, trong đầu tôi sẽ chỉ toàn mấy cái suy
-              đoán lung tung, rồi sự thật sẽ bị vùi lấp mất." "............"
-              "Thế nên, được nghe từ chính chị —— người đã có mặt tại hiện
-              trường, tôi mới có thể hạ quyết tâm. À không, là chuẩn bị tâm lý
-              để chấp nhận sự thật thì đúng hơn. Chậc, tôi cũng bắt đầu nói
-              chuyện rắc rối giống mấy người rồi đấy. Xin lỗi nhé." "——Không
-              đâu, chị nghĩ là chị hiểu cảm giác của Felt-chan mà." Dù Felt nhăn
-              mặt vì không giỏi giải thích, nhưng Emilia vẫn cảm nhận được tâm ý
-              đó. Nếu ở vị trí ngược lại, khi nghe tin một người quen biết đã hy
-              sinh ở nơi xa xôi mà mình không hay biết, chắc chắn Emilia cũng sẽ
-              vẽ ra đủ thứ viễn cảnh trong đầu. Những suy đoán đúng sai lẫn lộn
-              sẽ lấp đầy tâm trí, khiến sự thật trở nên mờ mịt. Vì vậy, dù là
-              một sự thật đau lòng, nhưng việc được người khác cắt đứt những suy
-              đoán mơ hồ đó chính là một sự cứu rỗi. "Và nếu người truyền đạt
-              điều đó là người mình tin tưởng, thì lại càng tốt hơn đúng không?"
-              "...Nói thế chẳng khác nào bảo tôi tin tưởng chị sao?" "Ừm, chị
-              cũng tin tưởng Felt-chan mà... Felt-chan cũng vậy đúng không? Thế
-              nên em mới tới đây gặp chị chứ?" "Này nhé, chúng ta là đối thủ
-              cạnh tranh ngôi vị đấy, gật đầu ở đây thì kỳ lắm đấy biết chưa!"
-              Felt hạ chân xuống khỏi ghế, chống cằm nhìn Emilia với vẻ mặt ngán
-              ngẩm. Tuy nhiên, vì cô bé không lắc đầu phủ nhận, nên Emilia đã có
-              thể mỉm cười nhẹ nhõm. Nghĩ về Priscilla, lồng ngực Emilia vẫn còn
-              đau thắt. Nhưng ít nhất, cô cảm thấy thật tốt khi không để những
-              băn khoăn của Felt bị vùi lấp trong bóng tối. "............" Cuộc
-              trò chuyện giữa hai người bị cắt ngang bởi một hơi thở nhẹ. Ngay
-              lập tức, Felt thính tai nhận ra và cất giọng khó chịu: "Này, ngươi
-              cười cái gì đấy?" "——Không, thần xin lỗi. Chỉ là hiếm khi thấy
-              Felt-sama bị Emilia-sama dồn vào thế bí như vậy, nên thần lỡ..."
-              "Lỡ cái gì mà lỡ. Có người hiệp sĩ nào lại đứng cười tủm tỉm khi
-              chủ nhân mình bị bắt chẹt thế hả?" "Xin hãy lượng thứ. Thần chỉ
-              cảm thấy không nên xen vào cuộc trò chuyện của hai người thôi."
-              Vừa nói vừa đặt tay lên ngực cúi chào là người hiệp sĩ của Felt,
-              với mái tóc đỏ và đôi mắt xanh đặc trưng —— Reinhard. Dĩ nhiên,
-              Felt không thể tự mình đến thăm Emilia, và anh cũng đã đứng đó
-              lắng nghe nãy giờ. Nhìn sự tương tác thân thiết giữa Reinhard và
-              Felt, Emilia khẽ lên tiếng: "Reinhard không cần phải khách sáo thế
-              đâu. Cả Otto-kun nhà mình cũng đã cùng trò chuyện nãy giờ... ơ?
-              Nãy giờ em có nói gì đâu nhỉ?" "Đúng thế đấy ạ. Cảm ơn tiểu thư đã
-              nhận ra. Dù sao thì tôi cũng có đủ chừng mực để không chen ngang
-              vào cuộc nói chuyện của hai nhân vật quyền quý đâu." Bên cạnh
-              Emilia, người vừa cười khổ là Otto —— người đã luôn ở đó từ đầu.
-              Lần này chỉ có mình Otto tháp tùng Emilia tới vương đô, nên hiển
-              nhiên cậu luôn có mặt trong mọi buổi báo cáo ở hoàng thành hay các
-              cuộc gặp gỡ tại vương hầu quán. Sự hiện diện của Otto luôn mang
-              lại cảm giác an tâm, nên đôi khi Emilia quên mất là cậu nãy giờ
-              vẫn giữ im lặng. "Xin lỗi nhé vì chị không nhận ra. Otto-kun vốn
-              thích nói chuyện mà, giữ im lặng nãy giờ chắc là khó khăn lắm."
-              "Tôi xin đính chính là tôi chỉ nói những điều cần thiết vào lúc
-              cần thiết thôi, chứ tôi không hề 'nghiện' nói chuyện đâu nhé!"
-              "Hừ, nghe chẳng có tí sức thuyết phục nào cả. Một tên có thể nói
-              chuyện từ con người đến cả sâu bọ hay rồng nước mà bảo không thích
-              nói chuyện thì ai tin được chứ." "Thần xin ngài đừng đánh đồng
-              giữa 'Gia hộ' và nhân cách của thần được không ạ?" Otto vừa giữ
-              lấy chiếc mũ xanh trên đầu vừa đáp lại lời trêu chọc của Felt. Với
-              sức mạnh của "Gia hộ ngôn linh", Otto có thể trò chuyện với đủ
-              loại sinh vật, nên Emilia cảm thấy nhận xét của Felt rất chính
-              xác. Cứ đi đến đâu là Otto lại kết bạn với đủ loại chim muông sâu
-              bọ đến đó. "Otto-kun có rất nhiều bạn đấy. Chị không có nhiều bạn
-              lắm, nên chị rất ngưỡng mộ khả năng hòa đồng của Otto." "Gọi là
-              'bạn' thì hơi khác một chút ạ. Thường thì những gì tôi thực hiện
-              là đàm phán hoặc giao dịch, nó thuộc về kỹ năng nghề nghiệp hơn là
-              kết bạn. Nghĩ kỹ thì, tôi cũng không thể nói là mình có nhiều bạn
-              được." "Định nghĩa về 'bạn' đâu cần phải nghĩ ngợi rắc rối thế.
-              Nếu muốn thì cứ kết bạn với Reinhard nhà tôi đi. Tên này cũng là
-              hạng ít bạn bè lắm." "Ơ, thật sao? Ngạc nhiên quá nhỉ." Trước lời
-              của Felt đang chỉ tay về phía Reinhard đứng sau sofa, Emilia không
-              khỏi ngước nhìn người hiệp sĩ tóc đỏ. Reinhard là người nhã nhặn,
-              nổi tiếng, và chắc chắn ai trong vương quốc cũng biết tên và tin
-              tưởng anh. Emilia cũng luôn được anh giúp đỡ tận tình từ lần đầu
-              gặp gỡ, nên cô cứ ngỡ anh phải là bạn của cả vương quốc này mới
-              đúng. Trước ánh mắt ngạc nhiên đó, Reinhard khẽ đáp: "Đáng tiếc là
-              dù thần luôn sẵn lòng, nhưng dường như sự hiện diện của thần
-              thường khiến đối phương thấy áp lực. Ngoại trừ những người trong
-              đội hiệp sĩ hay các đồng đội như Subaru hay Ferris ra... có lẽ
-              thần thật sự có rất ít bạn." "Ra là vậy. Reinhard cũng có nỗi khổ
-              đó sao... Này Otto-kun, nếu được thì em kết bạn với Reinhard nhé?"
-              "Tiểu thư vừa đưa ra một lời đề nghị cực kỳ khủng khiếp đấy ạ!
-              Chẳng nhẽ Reinhard-san không thấy đây là một sự xúc phạm sao?!"
-              "Làm gì có chuyện đó. Ngược lại là đằng khác, tôi rất hoan nghênh.
-              Cậu đồng ý làm bạn với tôi chứ?" "Cái này gọi là 'gọng kìm' hay là
-              'đánh úp' đây hả trời?!" Bị kẹp giữa ánh mắt kỳ vọng của Emilia và
-              nụ cười của Reinhard, Otto chỉ biết kêu "ư hừ" đầy khổ sở. Felt
-              khoái chí đứng xem, còn Otto sau một hồi đấu tranh tư tưởng đã thở
-              dài thườn thượt: "Như Felt-sama đã nói, hiện tại chúng ta thuộc
-              hai phe đối lập. Cho đến khi cuộc tuyển chọn kết thúc, việc giữ
-              mối quan hệ quá thân thiết là điều nên tránh." "Ra vậy. Tuy đáng
-              tiếc nhưng tôi tôn trọng ý chí của cậu. Dù chúng ta không phải là
-              bạn." "Vâng, xin hãy làm vậy. Vì chúng ta không phải là bạn." Otto
-              buông thõng vai nói những lời lạnh lùng, nhưng Reinhard lại đáp
-              lại bằng một nụ cười không hề tỏ vẻ tổn thương hay thất vọng. Dù
-              họ không thể trở thành bạn, nhưng trong mắt Emilia, không khí giữa
-              hai người họ trông chẳng khác gì bạn bè cả. Thêm vào đó —— "Haiz,
-              trà nguội hết cả rồi. Để tôi đi pha ấm mới. Emilia-sama cứ tiếp
-              tục trò chuyện ạ. Tôi sẽ ——" "—— Vậy để tôi đi cùng cậu nhé. Dù
-              không thể là bạn, nhưng hãy để tôi cho cậu thấy hiệu quả của 'Gia
-              hộ trà đạo' của mình." "Ngài thù dai một cách bất ngờ đấy nhỉ, mà
-              bị 'Kiếm Thánh' thù dai thì tôi thấy chẳng còn hy vọng sống sót gì
-              cả đâu." Hai người họ vừa trò chuyện vừa rời khỏi phòng. Nhìn cánh
-              cửa khép lại sau lưng Otto và Reinhard, Emilia quay sang Felt.
-              "Trông họ cứ như là bạn thân từ lâu rồi ấy nhỉ?" "Kaka, tôi cũng
-              thấy thế. Thường ngày tôi hay phát tiết vì cái vẻ đạo mạo của
-              Reinhard, nhưng đứng ở vị trí người ngoài nhìn vào thì thấy buồn
-              cười thật." "A, em lại đang làm cái mặt 'đứa trẻ hư' rồi. Nhưng vì
-              cuộc tuyển chọn mà bắt Otto-kun phải kìm nén chuyện kết bạn với
-              Reinhard thì..." "Hừ, anh chàng đó chỉ mượn lời tôi để làm cái cớ
-              thôi. Tôi hiểu lý do tại sao... cái chuyện vì tuyển chọn vương mà
-              không thể kết bạn á, đừng có tin sái cổ thế chứ." "Không cần
-              tin... sao?" Thấy Felt đang tâm trạng tốt đến mức như sắp ngâm nga
-              hát, Emilia suy nghĩ một lát rồi hạ quyết tâm đứng dậy. Otto vì lo
-              cho cuộc tuyển chọn mà từ bỏ việc kết bạn với Reinhard. Dù thấy có
-              lỗi với quyết định và sự quan tâm đó của Otto, nhưng Emilia đã
-              quyết định rồi. Sau chuyện của Priscilla, cô không muốn phải hối
-              hận thêm lần nào nữa. "Này Felt-chan, nghe chị nói được không?"
-              "Hử? Gì thế?" Emilia bước tới, ngồi xuống cạnh Felt, xoay hẳn
-              người sang đối diện với cô bé ở khoảng cách gần đến mức hai vai
-              chạm vào nhau. Trước khí thế của Emilia, Felt chớp chớp đôi mắt đỏ
-              đầy ngạc nhiên. Nghĩ lại thì, lần đầu Emilia gặp Felt là khi cô bé
-              đánh cắp huy chương —— chứng nhận tư cách tham gia tuyển chọn của
-              cô. Lúc đó đầu óc Emilia trống rỗng, và cô còn muốn trút giận lên
-              Puck vì ông ấy chẳng chịu lo lắng gì cả. Tóm lại, cuộc gặp gỡ đó
-              chẳng tốt đẹp gì cho cam. Thế nhưng lúc này, trước mặt đối thủ
-              cạnh tranh ngôi vị, Emilia lại nghĩ: "Chị muốn kết bạn với
-              Felt-chan. Không chỉ là xã giao bình thường, mà là những người bạn
-              cực kỳ thân thiết cơ." "......Hảaaaa?" "Thật ra chị đã hứa với
-              Anastasia-san là sau khi cuộc tuyển chọn kết thúc sẽ trở thành bạn
-              của nhau. Sẽ cùng đi du hành và trò chuyện nhiều điều... Dù lúc đó
-              không hẳn là Anastasia-san thực sự, nhưng bọn chị đã nói chuyện
-              rất nhiều và đã hứa như thế." Trước đôi mắt dao động của Felt,
-              Emilia nói liến thoắng. Lời hứa với Anastasia —— một người luôn tự
-              nhận mình là thương nhân —— chắc chắn cô ấy sẽ giữ lời. Anastasia
-              không giống Subaru, nên hứa hẹn với cô ấy rất yên tâm. "Chị lo cho
-              Subaru vì cậu ấy hay thất hứa lắm, nhưng Anastasia-san thì chắc
-              chắn rồi. Mà dù không có lời hứa đi nữa, chị cảm giác mình không
-              thể trở thành 'bạn' với Subaru, và chị cũng không hề có ý định
-              muốn làm 'bạn' với cậu ấy... Ơ? Chị đang nói gì thế này?" "Chị
-              đang nói về việc chị không thể làm bạn với anh chàng Subaru đó
-              hả?" "À, đúng rồi... Không phải! Đang nói chuyện của chị với
-              Felt-chan cơ!" Emilia hú vía vì suýt chút nữa lạc đề. Felt bất
-              chợt ngước lên nhìn trần nhà, khiến Emilia cũng vô thức nhìn theo
-              nhưng chẳng thấy gì cả. "Felt-chan?" "Tôi có nhìn trần nhà đâu.
-              Chỉ đang nghĩ xem nên làm thế nào thôi." "À, đúng rồi. Subaru và
-              Petra-chan hay bảo là nhìn vào mặt chị là sẽ thấy phấn chấn hẳn
-              lên đấy. Em thấy sao?" "Chị đang cố khoe khéo điểm tốt của mình
-              với tôi đấy à?" "Đúng thế, vì chị rất muốn kết bạn với Felt-chan
-              mà." Trong hơn một năm qua, Emilia đã dần quen với việc nhìn khuôn
-              mặt mình trong gương. Subaru, Petra và đôi khi cả Ram đều khen
-              ngợi vẻ ngoài của cô, nên cô thử vận may xem nó có tác dụng với
-              Felt không. Trước nỗ lực tiếp cận đến cùng của Emilia, Felt vẫn
-              ngước mặt lên trời: "Tại sao chị lại muốn làm bạn với tôi đến thế?
-              Cứ như hiện tại cũng được mà..." "Chị đã từng muốn kết bạn với
-              Priscilla." "............" "Nhưng chị đã trì hoãn việc nói ra điều
-              đó. Chị thật tệ nhỉ. Dù chị vốn đã biết rằng một người quan trọng
-              vừa mới khỏe mạnh hôm qua cũng có thể đột ngột rời xa mình mãi
-              mãi." Emilia khẽ đặt tay lên ngực, chạm vào viên ma tinh thạch đeo
-              trên cổ. Đó là Puck vẫn đang chìm vào giấc ngủ sâu, là những người
-              thân trong gia đình vẫn đang bị đóng băng trong khu rừng Elior. Sự
-              chia ly luôn đến bất thình lình, bất kể đối phương có quan trọng
-              đến nhường nào. Sự ra đi của Priscilla đã nhắc nhở cho một Emilia
-              hay quên về sự thật đau lòng đó. "Chị không muốn quên điều đó thêm
-              nữa. Thế nên chị quyết định sẽ không kìm nén nữa. Sẽ nói 'thích'
-              với những người chị yêu quý, và sẽ thổ lộ mong muốn kết bạn với
-              những người chị muốn ở bên." "——Khốn kiếp, cô nàng công chúa đó
-              đến phút cuối vẫn còn để lại rắc rối cho người ta mà." "——?"
-              Emilia đã nói ra những cảm xúc chân thành nhất của mình. Felt, sau
-              khi nghe xong, chậm rãi hạ tầm mắt xuống. Vẻ mặt của Felt lúc này
-              là một nụ cười, nhưng không phải kiểu hậm hực hay cay cú. "Được
-              rồi, tôi đồng ý. Tôi cũng sẽ làm bạn với chị, chị Emilia." "Thật
-              sao?! Vậy là sau khi cuộc tuyển chọn kết thúc..." "Không cần chờ
-              đến lúc đó đâu. Đằng nào thì kết quả cũng chẳng thay đổi, tôi sẽ
-              làm bạn với chị trước cả chị Anastasia để cho bà chị đó tức chơi."
-              "A, đừng nói thế chứ. Anastasia-san cũng là bạn của chị mà."
-              "Chẳng nhẽ người đã là bạn như tôi lại không quan trọng hơn người
-              chưa phải là bạn như chị Anastasia trong lòng chị Emilia sao?"
-              "Thật là, đừng có làm khó chị mà!" Nhìn Felt cười rạng rỡ khoe
-              răng khểnh, Emilia cũng không nhịn được mà mỉm cười theo. Lời đề
-              nghị của cô đã nhận được một câu trả lời tuyệt vời. Cảm giác thực
-              sự đã trở thành bạn với Felt khiến trái tim Emilia dần được lấp
-              đầy bởi sự ấm áp. Vừa cười với Felt, Emilia vừa nghĩ về Al ——
-              người vẫn chưa thể chấp nhận cái chết của Priscilla, và cả Subaru
-              đang ở bên cạnh anh ấy. "Cả với Al nữa ——" Một ngày nào đó. Không
-              cần phải ngay bây giờ, nhưng một ngày nào đó. Emilia thầm cầu
-              nguyện rằng một ngày nào đó, họ có thể cùng nhau kể về Priscilla
-              —— người mà cô từng ước ao được kết bạn —— bằng một vẻ mặt khác
-              thay vì những giọt nước mắt. Emilia thầm nghĩ như vậy, khi đang
-              vai kề vai bên người bạn mới của mình. △▼△▼△▼△ "——Thế nên, cậu mới
-              ra hiệu cho tôi. Cậu có chuyện muốn nói đúng không?" Sau khi để
-              Emilia và Felt lại trong phòng khách, đi được một đoạn ngoài hành
-              lang, Reinhard đột ngột lên tiếng. Tay bưng khay trà bạc, Otto gật
-              đầu mà không quay lại: "Ngài nhận ra sớm thì tốt quá. Felt-sama
-              tới thăm đã giúp tiểu thư Emilia cuối cùng cũng có thể cười một
-              cách tự nhiên, tôi không muốn phá hỏng bầu không khí đó." "Quả
-              nhiên, chuyện của Priscilla-sama đã tác động tới cô ấy rất lớn."
-              "Nói thật, trong trận chiến đó, chẳng có ai là không bị chấn động
-              cả. Ngay cả một người hầu như chẳng có điểm tiếp xúc nào như tôi
-              mà còn cảm thấy đau lòng nữa là." Dĩ nhiên, cú sốc của Otto không
-              thể so sánh được với Emilia —— người có thiện cảm với Priscilla,
-              hay Subaru và Al —— những người đã tận mắt chứng kiến cô ấy tan
-              biến. Tuy nhiên, với tư cách là người đã nỗ lực hết mình để cứu
-              sống càng nhiều đồng đội trong cuộc 'Đại tai họa' càng tốt, việc
-              một người của vương quốc —— một ứng viên tuyển chọn vương tử vong
-              —— là một đòn giáng mạnh vào Otto. Mặc dù ở một góc độ khác, cái
-              tôi lý trí trong cậu không thể không phân tích về việc mất đi một
-              đối thủ có sức hút phi thường nhưng đầy bất trị. "......Bất ngờ
-              thật đấy." Nghe thấy lời lầm bầm của Reinhard như thể anh vừa đọc
-              thấu tâm can mình, Otto khẽ liếc nhìn ra sau. Reinhard thực sự
-              đang nhướng mày tỏ vẻ ngạc nhiên. Trước phản ứng đó, Otto khẽ nở
-              nụ cười tự giễu: "Ngài thấy bất ngờ vì tôi lại đau lòng trước cái
-              chết của Priscilla-sama sao? Đúng là nếu bảo tôi không thấy mừng
-              khi bớt đi một đối thủ cạnh tranh thì là nói dối..." "Không đâu,
-              tôi bất ngờ vì cậu dám thẳng thắn nói ra điểm yếu của mình như vậy
-              đấy. Cậu không cần phải cố tỏ ra mình là kẻ thực dụng xấu xa như
-              vậy đâu." "............" "Hay là việc cậu bộc lộ bản tâm là bằng
-              chứng của việc đã tin tưởng... một dấu hiệu cho thấy chúng ta có
-              thể thành bạn?" "Có vẻ như tôi đã chọn sai từ ngữ rồi." Bị trêu
-              chọc, Otto khẽ xốc lại vai và tiếp tục bước đi. Dường như tình
-              trạng tâm lý của cậu đang tệ hơn cậu tưởng. Reinhard nhận ra điều
-              đó nên mới coi sai lầm vừa rồi chỉ là một màn đấu khẩu nhẹ nhàng.
-              "Tỉnh táo lại đi nào, Otto Suwen." Cậu tự nhắc nhở mình phải giữ
-              vững dây cương. Dù Felt không có ác ý với Emilia, nhưng họ vẫn là
-              đối thủ cạnh tranh. Tốt nhất là không nên để đối phương thấy điểm
-              yếu của mình. Một trạng thái tinh thần mất cân bằng là thứ tuyệt
-              đối không được để lộ ra. Sau khi lấy lại sự tỉnh táo, Otto bắt đầu
-              đi vào mục đích chính khi kéo Reinhard ra ngoài. Đó là —— "——Tôi
-              sẽ chia sẻ thông tin về Heinkel Astrea cho ngài." "............"
-              Ngay khi chủ đề vừa được đưa ra, bầu không khí ngoài hành lang
-              thay đổi rõ rệt. Độ ẩm, nhiệt độ, mọi thứ như đông cứng lại. Và
-              người gây ra điều đó chắc chắn là 'Kiếm Thánh' đang đi ngay bên
-              cạnh. "Về Heinkel-san, ông ấy đã tham gia trận chiến ở Đế quốc với
-              tư cách là một thành viên trong phe của Priscilla-sama và đã sống
-              sót. Tuy nhiên, sau cái chết của Priscilla-sama, người ta thấy ông
-              ấy rơi vào trạng thái hoảng loạn tột độ, và sau đó thì mất tích."
-              "......Bị Đế quốc bắt giữ sao?" "Không, tôi nghĩ là không đâu. Dù
-              Đế quốc nổi tiếng là thực dụng đến mức tàn khốc, nhưng sau khi
-              kiệt quệ vì trận chiến đó, họ không ngu ngốc đến mức đi gây hấn
-              với vương quốc —— hay chính xác hơn là gây hấn với 'Kiếm Thánh'
-              Reinhard van Astrea đâu." "Vậy là ông ấy chủ động lẩn trốn sao."
-              Reinhard khẽ cụp mắt, thốt ra lời đó bằng giọng yếu ớt. Otto không
-              hề có ý định trả đũa, nhưng vô tình cậu lại tạo ra một tình huống
-              làm mất cân bằng tâm lý của đối phương, giống như cách cậu vừa
-              trải qua. Tuy nhiên, Otto lúc này không có tâm trạng để khoét sâu
-              vào điểm yếu của người khác. Dù cảm thấy mình không hợp với việc
-              này, nhưng —— "Heinkel-san... cha của ngài, ngài có lo cho ông ấy
-              không?" Câu hỏi đó xuất phát từ sự quan tâm chân thành dành cho
-              người vừa quan tâm mình. Thực tế, đây là một câu hỏi rất khó trả
-              lời với Reinhard. Dù không biết quá chi tiết, nhưng Otto thừa biết
-              mối quan hệ cha con này đã rạn nứt và đổ vỡ đến mức nào. Thậm chí
-              Otto đã từng chứng kiến cảnh Heinkel kề kiếm vào cổ Felt tại
-              Pristella để khống chế Reinhard. Chưa kể, việc cả ba thế hệ trong
-              gia đình Astrea ủng hộ ba ứng viên khác nhau đã nói lên sự bất ổn
-              của gia tộc này. Dù sao thì —— "Dù không biết có giúp ngài nhẹ
-              lòng hơn không, nhưng theo lời Garfiel, cha của ngài đã chịu được
-              cả một đòn của 'Rồng'. Thế nên khả năng ông ấy bị sát hại hay gặp
-              nguy hiểm tính mạng là rất thấp." Khi nói điều đó, Otto đã cố ý
-              giấu đi khả năng Heinkel tự sát. Theo những gì cậu nghe được,
-              Heinkel sau khi mất đi Priscilla đã hoảng loạn đến mức quỳ lạy xin
-              làm cấp dưới của Emilia. Bị Emilia từ chối, việc một kẻ không còn
-              nơi nương tựa như ông ấy làm liều là hoàn toàn có thể —— "——Chuyện
-              đó không xảy ra đâu, Otto. Cha tôi sẽ tuyệt đối không bao giờ tự
-              kết liễu đời mình." "......Mặt tôi lại lộ rõ như tiểu thư Emilia
-              rồi sao?" Bị đoán trúng tâm can, Otto khẽ xoa trán. Reinhard mỉm
-              cười buồn: "Không đâu. Chỉ là vì cậu đã cố tình không nói ra khả
-              năng tồi tệ nhất, nên tôi nghĩ đó là sự quan tâm của cậu. Nhưng
-              nỗi lo đó là dư thừa rồi. Cha tôi có một mục tiêu mà ông ấy nhất
-              định phải sống để thực hiện. Ông ấy sẽ không bao giờ chọn cái chết
-              trước khi đạt được nó đâu." "Nếu thế, tôi vừa thấy an tâm nhưng
-              cũng vừa thấy lo lắng hơn đấy. Một kẻ bị dồn vào đường cùng thì
-              chẳng biết sẽ làm ra chuyện gì... Chẳng nhẽ mục tiêu tiếp theo của
-              ông ấy là tiếp cận Felt-sama sao?" Đối với Heinkel, đây là lựa
-              chọn khả dĩ hơn nhiều so với việc bám víu vào Emilia. Dĩ nhiên,
-              lựa chọn đó sẽ xóa sổ lợi thế duy nhất và tuyệt đối của ông ấy ——
-              khả năng gây áp lực lên Reinhard. Nhưng dù bỏ qua chuyện đó, đây
-              vẫn là một lựa chọn có xác suất cao được chấp nhận. Mất đi
-              Priscilla, bị Emilia từ chối, việc Heinkel chọn Felt làm vật ký
-              sinh tiếp theo là điều hoàn toàn có thể xảy ra. Tuy nhiên ——
-              "——Chuyện đó cũng sẽ không xảy ra đâu." Lời khẳng định lần này còn
-              chắc nịch hơn lần trước, khiến Otto không thể nói thêm lời nào.
-              "............" Trong đôi mắt xanh thẳm như phản chiếu bầu trời ấy,
-              bỗng hiện lên một sắc thái âm u như đêm tối. Nụ cười trên môi biến
-              mất, Reinhard lặng lẽ bước đi bên cạnh Otto. Hai bước, ba bước,
-              trong sự im lặng bao trùm, họ dần tiến gần về phía nhà bếp. Tưởng
-              chừng cuộc hội thoại sẽ kết thúc trong câm lặng, nhưng Reinhard
-              lại tiếp lời: "Cha tôi muốn tôi từ bỏ danh hiệu 'Kiếm Thánh'. Thế
-              nên, trong cuộc tuyển chọn mà tôi buộc phải thắng này, ông ấy sẽ
-              không bao giờ giúp đỡ Felt-sama —— người mà tôi đang ủng hộ."
-              "......Muốn thắng cuộc tuyển chọn. Nhưng lại không muốn ngài giành
-              chiến thắng?" "Đúng là như vậy. Ở điểm đó, tôi và cha không bao
-              giờ có thể hòa hợp. Dù cha có mong muốn thế nào đi nữa, tôi vẫn là
-              'Kiếm Thánh'. ——Tôi 'buộc phải' là Kiếm Thánh." Mỗi người đều có
-              nỗi khổ riêng. Otto hiểu rõ điều đó nên không định can thiệp sâu
-              vào chuyện nội bộ nhà người khác. Dù cậu cảm nhận rõ ràng đây là
-              một mối quan hệ cha con cực kỳ méo mó, và câu nói cuối cùng của
-              Reinhard nghe cứ như anh đang tự trấn an chính mình. Vì vậy, điều
-              duy nhất Otto có thể làm là thể hiện rõ lập trường của mình. "——
-              Chà chà, thật là một màn không tưởng nhỉ. Trong đời mình, tôi chưa
-              bao giờ nghĩ lại có lúc đứng tán gẫu chuyện thế gian với 'Kiếm
-              Thánh' thế này." Otto nhún vai, cho Reinhard thấy mình không có ý
-              định đào sâu thêm. Đây là kỹ năng sinh tồn của một thương nhân lưu
-              động khi gặp gỡ đủ mọi hạng người ở khắp nơi. Dù có nghe thấy
-              thông tin gì đi nữa, chỉ cần thể hiện rõ rằng mình sẽ không lợi
-              dụng nó, đối phương sẽ coi mình là vô hại. Hầu như trong mọi
-              trường hợp, cách này giúp cậu rời khỏi trạm dừng chân một cách yên
-              bình. "Đôi khi có những người rất vô lý, lúc uống say thì lỡ miệng
-              nói ra bí mật tuyệt mật, rồi sau đó lại định giết người diệt khẩu
-              để bịt đầu mối..." Vì thế, ở các quán rượu —— nơi lý tưởng nhất để
-              thu thập thông tin —— cũng cần phải biết cách để không vô tình
-              nghe được những thông tin quá quan trọng. Kỹ năng đó của một
-              thương nhân, hóa ra lại giúp ích rất nhiều khi cậu tham gia vào
-              cuộc tuyển chọn vương này. Dù sao thì —— "Cảm ơn cậu đã chia sẻ
-              chuyện của cha tôi. Tôi sẽ lưu tâm." Reinhard gật đầu, như thể đã
-              chấp nhận tuyên bố của Otto. Otto nhún vai đáp lại: "Tôi có làm
-              ngài lo nghĩ thêm không? Ở vị trí 'Kiếm Thánh', chắc hẳn ngài đã
-              có quá nhiều chuyện phải phiền lòng rồi." "Đó là Gia hộ và vị trí
-              mà tôi đã mong muốn có được. Đó là trách nhiệm của tôi." Gia hộ là
-              thứ được ban tặng. Otto thấy cách nói "mong muốn có được" hơi kỳ
-              lạ, nhưng cậu chợt nhớ ra "Gia hộ Kiếm Thánh" là thứ được kế thừa
-              bởi người xứng đáng sau này. Reinhard cũng là người đã kế thừa nó
-              sau cái chết của 'Kiếm Thánh' đời trước. "Với những người có Gia
-              hộ, nỗi lo về việc chung sống với sức mạnh của mình là không bao
-              giờ dứt. Theo tôi thấy thì Otto đã sử dụng nó rất thành thạo rồi,
-              nên chắc cậu không phiền lòng mấy nhỉ?" "Làm gì có chuyện thành
-              thạo chứ. Từ khi sinh ra tôi đã luôn bị cái Gia hộ khó trị này
-              xoay như chong chóng rồi. Nếu có thể tặng nó cho ai đó, tôi sẽ sẵn
-              lòng tặng ngay lập tức." "Hahaha, đừng nói những lời bất cẩn thế
-              chứ. Có rất nhiều người ghen tị với những người có Gia hộ đấy. Dù
-              tôi biết là không cần phải nhắc cậu điều này." "Thực tế thì tôi
-              thấy nó chẳng có gì đáng để ghen tị cả." Đúng như Reinhard nói,
-              nỗi khổ của người có Gia hộ là không bao giờ dứt. Đó không chỉ là
-              khoảng cách với những người không có Gia hộ, mà ngay cả giữa những
-              người có Gia hộ khác nhau cũng không thể thấu hiểu nhau. Nó giống
-              như việc phải liên tục trả lời những câu hỏi hóc búa không có đáp
-              án mẫu vậy. Câu trả lời của Otto cho lời xã giao của Reinhard hoàn
-              toàn là bản tâm của cậu. —— Cậu chưa bao giờ tự phụ rằng mình đã
-              làm chủ được "Gia hộ ngôn linh". Có lẽ mãi mãi về sau cũng vậy.
-              "Không giống như 'Gia hộ Kiếm Thánh' của ngài, cái của tôi chẳng
-              bao giờ được ghi danh vào sử sách đâu." "Cậu đừng cứ mở mồm là
-              'Kiếm Thánh', đóng mồm là 'Kiếm Thánh' như thế, tôi thấy áp lực
-              lắm. Suy cho cùng tôi cũng chỉ là một kẻ non nớt đang bị cái danh
-              hiệu đó xoay vòng vòng thôi. Tôi không có ý định dùng nó để lên
-              mặt với ai đâu." "Người ta bảo vị trí tạo nên con người mà. Có lẽ
-              chính Reinhard-san không tự nhận ra, nhưng cái vẻ 'Kiếm Thánh' của
-              ngài đôi khi cũng khiến người xung quanh thấy áp lực đấy." "Vẻ
-              'Kiếm Thánh' gây áp lực sao... Cậu có thể nói rõ hơn không? Có lẽ
-              đó là lý do Felt-sama hay Rachins thỉnh thoảng lại cằn nhằn tôi về
-              chuyện gì đó." "Tôi chỉ đùa thôi mà ngài lại đào sâu quá làm tôi
-              khó xử đấy nhé!" Bị hỏi dồn dập một cách bất ngờ, Otto chỉ biết
-              kêu trời trước sự hiếu kỳ của Reinhard. Trong bầu không khí đã trở
-              nên nhẹ nhàng và cởi mở hơn, Otto khẽ hạ thấp cảnh giác với
-              Reinhard, dành ra một chút thảnh thơi cho tâm hồn. Ít nhất là lúc
-              này, Otto không có lý do gì để vội vàng bày mưu tính kế với phe
-              Felt hay Reinhard, nhất là khi việc đó sẽ làm xấu đi ấn tượng của
-              họ. Bản thân cậu lúc này cũng không ở trạng thái tốt nhất. Hơn
-              nữa, ở một nơi xa xôi, Subaru chắc hẳn cũng đang dốc hết lòng vì
-              Al. "Ngay cả tôi cũng thấy cắn rứt lương tâm nếu đi bày mưu tính
-              kế sau lưng lúc Natsuki-san và mọi người đang cố gắng cứu vãn trái
-              tim của ai đó đấy. —— Trừ phi đó là Bá tước Mathers." Khác với
-              nhóm Subaru đã tới Tháp giám sát cùng Al, Roswaal đã dẫn theo
-              Schult —— người hầu của Priscilla —— để trở về lãnh địa Barielle
-              của cô. Otto không nghi ngờ gì việc đằng sau sự lo lắng và quan
-              tâm đó là mục đích can thiệp vào lãnh địa Barielle nhân cơ hội
-              này. Hành động đó là đúng đắn và nhiệt thành đối với một người
-              tham gia tuyển chọn vương, nhưng cũng thật đáng khinh. —— Đồng
-              thời, Otto cũng cảm thấy nhẹ nhõm (hoặc có lẽ là tự thấy mình còn
-              quá non nớt) khi nhận ra mình không thể nhẫn tâm đến mức đó. "Vậy
-              thì để tôi pha trà nhé. Hãy xem tôi trổ tài đây." "Tôi sẽ không
-              khách sáo đâu, cứ để tôi chiêm ngưỡng tay nghề của ngài." Ngay khi
-              tới bếp, Reinhard giành lấy khay trà và bắt đầu chuẩn bị. Quan sát
-              anh, Otto hít một hơi sâu, tạm gác lại những diễn biến sắp tới để
-              tận hưởng giây phút nghỉ ngơi ngắn ngủi. Nhưng, cậu có một linh
-              cảm. Linh cảm rằng sắp có chuyện gì đó xảy ra. "......Việc trì
-              hoãn buổi lên triều của tiểu thư Emilia và Felt-sama để ưu tiên
-              một cuộc thảo luận nào đó trong hoàng thành. Rốt cuộc là có chuyện
-              gì nhỉ." Ngay khi Otto vừa lầm bầm, một cái bóng nhỏ ẩn hiện sau
-              cây cột cạnh cậu. —— Đó là một con bọ Zodda mà cậu đã giao kèo để
-              báo cáo nếu có bất kỳ động thái nào trong hoàng thành. —— Linh cảm
-              của Otto đã đúng theo hai nghĩa. Một là báo cáo từ con bọ Zodda về
-              việc cuộc thảo luận trong hoàng thành (vốn cố ý gạt các ứng viên
-              tuyển chọn ra ngoài) đã đi đến kết luận. Hai là báo cáo từ Gracis
-              —— một cô gái thuộc phe của Felt vừa tới vương hầu quán. Đó là một
-              tin tức dồn dập và phức tạp: Phía nhóm Subaru ở Tháp giám sát đã
-              xảy ra rắc rối, Al đã bị bắt giữ, và nhóm Subaru đang trên đường
-              trở về vương đô.
+              Cơn mưa bắt đầu từ trước bình minh. Đến khi tiếng chuông thứ mười
+              vang lên trong khu phố cũ, mặt đường đã biến thành những tấm gương
+              tối, lặng lẽ giữ lại sắc xám của bầu trời.
             </p>
             <p>
               Cô kéo áo choàng sát hơn vào người, bước dọc theo mái hiên nơi
@@ -1096,14 +769,11 @@
             >QUINTESSENCE TRANSLATION</span
           >
           <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-300">
-            Dự án dịch fan phi lợi nhuận dành cho độc giả Re:Zero, tập trung vào
-            trải nghiệm đọc rõ ràng, dễ theo dõi và thân thiện với tiếng Việt.
+            Dự án dịch phi lợi nhuận dành cho độc giả Re:Zero Việt Nam.
           </p>
           <div class="mt-6 flex gap-3">
             <a
-              href="https://discord.com/invite/MvyNT5g"
-              target="_blank"
-              rel="noopener"
+              href="#"
               aria-label="Discord"
               class="flex h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-arcane-400/60 hover:text-arcane-300"
               ><svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
@@ -1149,19 +819,10 @@
           </h4>
           <ul class="space-y-2 text-sm text-ink-300">
             <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Re:Zero Wiki</a
-              >
+              <a href="https://rezero.fandom.com/wiki/Re:Zero_Wiki" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Re:Zero Wiki</a>
             </li>
             <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Cộng đồng Re:Zero</a
-              >
-            </li>
-            <li>
-              <a href="#" class="transition-colors hover:text-spectral-300"
-                >Tiến độ dịch</a
-              >
+              <a href="https://www.facebook.com/groups/1199754170205957/" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Cộng đồng Re:Zero Việt Nam</a>
             </li>
           </ul>
         </div>
@@ -1174,18 +835,14 @@
           <ul class="space-y-2 text-sm text-ink-300">
             <li>
               <a
-                href="https://discord.com/invite/MvyNT5g"
-                target="_blank"
-                rel="noopener"
+                href="#"
                 class="transition-colors hover:text-spectral-300"
                 >Discord</a
               >
             </li>
             <li>
               <a
-                href="https://www.patreon.com/WCTranslations"
-                target="_blank"
-                rel="noopener"
+                href="#"
                 class="transition-colors hover:text-spectral-300"
                 >Ủng hộ</a
               >
@@ -1199,15 +856,7 @@
         </div>
       </div>
       <div class="border-t border-void-700/60">
-        <div
-          class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-6 text-xs text-ink-500 md:flex-row lg:px-8"
-        >
-          <p>
-            Re:Zero © Tappei Nagatsuki. Quintessence Translation là dự án fan
-            độc lập, phi thương mại.
-          </p>
-          <p>Được chăm chút cho những độc giả muốn đọc tiếp câu chuyện.</p>
-        </div>
+        <div class="mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-6 text-center text-xs text-ink-500 lg:px-8"><p>Re:Zero © Tappei Nagatsuki. QuintessenceTranslations © 2026.</p></div>
       </div>
     </footer>
     <script>
@@ -1333,7 +982,7 @@
           title: "Vương Quốc Sư Tử",
           id: 10,
           roman: "X",
-          desc: "Arc mới nhất, vẫn đang được cập nhật theo tiến độ dịch.",
+          desc: "Arc mới nhất, đang được cập nhật khi có chương mới.",
         },
       ];
       const chapterData = {
@@ -1494,13 +1143,7 @@
       document.getElementById("reader-title").textContent =
         chapter.title || arc.title;
       document.getElementById("reader-context").textContent =
-        "Bạn đang đọc " +
-        chapter.label +
-        " của Arc " +
-        arc.id +
-        ": " +
-        arc.title +
-        ". Khi có nội dung thật, chỉ cần thay các đoạn trong khu vực chương.";
+        "Bạn đang đọc " + chapter.label + " của Arc " + arc.id + ": " + arc.title + ".";
       document.getElementById("back-to-arc").href = "arc.html?arc=" + arc.id;
       document.getElementById("bottom-back").href = "arc.html?arc=" + arc.id;
       document.getElementById("prev-chapter").href = previousChapter
@@ -1571,5 +1214,29 @@
         updateProgress();
       })();
     </script>
-  </body>
+  <script>
+(function () {
+  const root = document.documentElement;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const storageKey = "qt-theme";
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#F9F6EF" : "#07040F");
+    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+      const isLight = theme === "light";
+      button.setAttribute("aria-pressed", String(isLight));
+      button.setAttribute("aria-label", isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng");
+      button.title = isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng";
+    });
+    try { localStorage.setItem(storageKey, theme); } catch (error) {}
+  }
+  setTheme(root.dataset.theme || "dark");
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-theme-toggle]");
+    if (!button) return;
+    setTheme(root.dataset.theme === "light" ? "dark" : "light");
+  });
+})();
+</script>
+</body>
 </html>

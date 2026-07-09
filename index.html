@@ -14,17 +14,28 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
+<script>
+(function () {
+  try {
+    const savedTheme = localStorage.getItem("qt-theme");
+    const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.dataset.theme = savedTheme || (prefersLight ? "light" : "dark");
+  } catch (error) {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        void: { 950: '#07040F', 900: '#0D0817', 800: '#161022', 700: '#221A33' },
-        arcane: { 300: '#C4B5FD', 400: '#A78BFA', 500: '#8B5CF6', 600: '#7C3AED' },
-        spectral: { 300: '#A5F3FC', 400: '#67E8F9', 500: '#22D3EE' },
-        miasma: { 500: '#E11D48' },
-        ink: { 100: '#F4F1FA', 300: '#AEA5C8', 500: '#6F6783' }
+        void: { 950: 'rgb(var(--void-950) / <alpha-value>)', 900: 'rgb(var(--void-900) / <alpha-value>)', 800: 'rgb(var(--void-800) / <alpha-value>)', 700: 'rgb(var(--void-700) / <alpha-value>)' },
+        arcane: { 300: 'rgb(var(--arcane-300) / <alpha-value>)', 400: 'rgb(var(--arcane-400) / <alpha-value>)', 500: 'rgb(var(--arcane-500) / <alpha-value>)', 600: 'rgb(var(--arcane-600) / <alpha-value>)' },
+        spectral: { 300: 'rgb(var(--spectral-300) / <alpha-value>)', 400: 'rgb(var(--spectral-400) / <alpha-value>)', 500: 'rgb(var(--spectral-500) / <alpha-value>)' },
+        miasma: { 500: 'rgb(var(--miasma-500) / <alpha-value>)' },
+        ink: { 100: 'rgb(var(--ink-100) / <alpha-value>)', 300: 'rgb(var(--ink-300) / <alpha-value>)', 500: 'rgb(var(--ink-500) / <alpha-value>)' }
       },
       fontFamily: {
         display: ['Be Vietnam Pro', 'system-ui', 'sans-serif'],
@@ -37,18 +48,117 @@ tailwind.config = {
 };
 </script>
 <style>
+:root {
+  color-scheme: dark;
+  --void-950: 7 4 15;
+  --void-900: 13 8 23;
+  --void-800: 22 16 34;
+  --void-700: 34 26 51;
+  --arcane-300: 196 181 253;
+  --arcane-400: 167 139 250;
+  --arcane-500: 139 92 246;
+  --arcane-600: 124 58 237;
+  --spectral-300: 165 243 252;
+  --spectral-400: 103 232 249;
+  --spectral-500: 34 211 238;
+  --miasma-500: 225 29 72;
+  --ink-100: 244 241 250;
+  --ink-300: 174 165 200;
+  --ink-500: 111 103 131;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --void-950: 249 246 239;
+  --void-900: 255 251 243;
+  --void-800: 238 231 219;
+  --void-700: 206 193 174;
+  --arcane-300: 99 84 174;
+  --arcane-400: 124 92 199;
+  --arcane-500: 139 92 246;
+  --arcane-600: 103 58 183;
+  --spectral-300: 12 123 145;
+  --spectral-400: 14 148 174;
+  --spectral-500: 8 126 149;
+  --miasma-500: 190 18 60;
+  --ink-100: 31 25 45;
+  --ink-300: 85 75 112;
+  --ink-500: 120 108 145;
+}
+.theme-toggle {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  height: 2.35rem;
+  width: 4.15rem;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(var(--void-700) / 0.72);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 28% 50%, rgb(var(--arcane-500) / 0.32), transparent 31%),
+    radial-gradient(circle at 72% 50%, rgb(var(--spectral-500) / 0.22), transparent 30%),
+    rgb(var(--void-900) / 0.92);
+  box-shadow: inset 0 0 18px rgb(0 0 0 / 0.2), 0 8px 22px rgb(0 0 0 / 0.14);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0.22rem;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent, rgb(var(--spectral-400) / 0.22), transparent);
+  opacity: 0.8;
+}
+.theme-toggle-mark {
+  position: relative;
+  z-index: 1;
+  height: 1.15rem;
+  width: 1.15rem;
+  transform: translateX(-0.86rem) rotate(-18deg);
+  background: conic-gradient(from 20deg, #fde68a, rgb(var(--arcane-400)), rgb(var(--spectral-400)), #fde68a);
+  clip-path: polygon(50% 0, 58% 35%, 94% 20%, 68% 50%, 94% 80%, 58% 65%, 50% 100%, 42% 65%, 6% 80%, 32% 50%, 6% 20%, 42% 35%);
+  filter: drop-shadow(0 0 8px rgb(var(--arcane-400) / 0.6));
+  transition: transform 0.36s ease, border-radius 0.36s ease, clip-path 0.36s ease, background 0.36s ease, filter 0.36s ease;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid rgb(var(--spectral-400));
+  outline-offset: 3px;
+}
+:root[data-theme="light"] .theme-toggle {
+  border-color: rgb(var(--arcane-400) / 0.42);
+  background:
+    radial-gradient(circle at 34% 40%, rgb(253 230 138 / 0.72), transparent 35%),
+    linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--void-800) / 0.7));
+  box-shadow: inset 0 0 14px rgb(255 255 255 / 0.8), 0 8px 20px rgb(124 92 199 / 0.12);
+}
+:root[data-theme="light"] .theme-toggle-mark {
+  transform: translateX(0.86rem) rotate(0deg);
+  border-radius: 999px;
+  background: #fffdf7;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  filter: drop-shadow(0 0 10px rgb(245 158 11 / 0.45));
+}
+.mobile-theme-toggle {
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 639px) {
+  .site-theme-toggle { display: none; }
+}
+@media (min-width: 640px) {
+  .mobile-theme-toggle { display: none; }
+}
 ::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #07040F; }
-::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
+::-webkit-scrollbar-track { background: rgb(var(--void-950)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--arcane-600)); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--arcane-500)); }
 .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 .mobile-panel { opacity: 0; transform: translateY(-8px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
 .mobile-panel.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 100; transition: top 0.2s ease; }
 .skip-link:focus { top: 1rem; }
-:focus-visible { outline: 2px solid #8B5CF6; outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 2px solid rgb(var(--arcane-500)); outline-offset: 2px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .animate-glow-pulse { animation: none !important; }
@@ -67,7 +177,7 @@ tailwind.config = {
         <span class="relative flex h-9 w-9 shrink-0 items-center justify-center">
           <span class="absolute inset-0 animate-glow-pulse rounded-full bg-arcane-500/40 blur-md transition-colors duration-500 group-hover:bg-spectral-400/50"></span>
           <svg viewBox="0 0 40 40" class="relative h-8 w-8" aria-hidden="true">
-            <defs><linearGradient id="sigilGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient></defs>
+            <defs><linearGradient id="sigilGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgb(var(--arcane-400) / <alpha-value>)"/><stop offset="100%" stop-color="rgb(var(--spectral-500) / <alpha-value>)"/></linearGradient></defs>
             <circle cx="20" cy="20" r="17" fill="none" stroke="url(#sigilGrad)" stroke-width="1.1"/>
             <path d="M20 5 L20 35 M5 20 L35 20 M9.9 9.9 L30.1 30.1 M30.1 9.9 L9.9 30.1" stroke="url(#sigilGrad)" stroke-width="0.6" opacity="0.6"/>
             <circle cx="20" cy="20" r="3.5" fill="url(#sigilGrad)"/>
@@ -93,7 +203,6 @@ tailwind.config = {
           <button type="button" class="flex items-center gap-1.5 py-2 text-sm tracking-wide text-ink-300 transition-colors duration-300 hover:text-ink-100 focus-visible:text-ink-100"><span>Thông tin</span><svg class="h-3 w-3 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
           <div class="pointer-events-none absolute left-1/2 top-full z-20 mt-3 w-56 -translate-x-1/2 translate-y-2 rounded-xl border border-void-700/60 bg-void-900/95 p-2 opacity-0 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
             <a href="#" class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300">Bản đồ thế giới</a>
-            <a href="#" class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300">Tiến độ dịch</a>
             <a href="#" class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300">Nội dung bị cắt</a>
             <a href="#" class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300">Quy chuẩn biên tập</a>
             <a href="about.html" class="block rounded-lg px-4 py-2.5 text-sm text-ink-300 transition-colors duration-200 hover:bg-void-800/80 hover:text-spectral-300">Giới thiệu &amp; Hỏi đáp</a>
@@ -102,10 +211,11 @@ tailwind.config = {
       </nav>
 
       <div class="reveal flex items-center gap-3" style="transition-delay:0.2s">
-        <a href="https://discord.com/invite/MvyNT5g" target="_blank" rel="noopener" aria-label="Discord" class="hidden h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-spectral-400/60 hover:text-spectral-300 sm:flex">
+        <button type="button" class="theme-toggle site-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
+        <a href="#" aria-label="Discord" class="hidden h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-spectral-400/60 hover:text-spectral-300 sm:flex">
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor" aria-hidden="true"><path d="M20.3 5.3A18 18 0 0 0 15.8 4l-.3.6a13 13 0 0 1 3.8 1.5 15 15 0 0 0-13 0A13 13 0 0 1 10 4.6L9.7 4a18 18 0 0 0-4.5 1.3C2.4 9 1.7 12.6 2 16.2A18 18 0 0 0 7.4 19l.8-1.3a11 11 0 0 1-1.9-1c.2-.1.3-.2.5-.3a13 13 0 0 0 10.4 0l.5.3c-.6.4-1.2.7-1.9 1l.8 1.3a18 18 0 0 0 5.4-2.8c.4-4.2-.6-7.7-2.7-10.9ZM9 14.6c-.8 0-1.5-.8-1.5-1.7S8.1 11 9 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Zm6 0c-.8 0-1.5-.8-1.5-1.7S14.2 11 15 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Z"/></svg>
         </a>
-        <a href="https://www.patreon.com/WCTranslations" target="_blank" rel="noopener" class="rounded-full bg-arcane-500 px-5 py-2 text-sm font-semibold text-void-950 transition-all duration-300 hover:bg-arcane-400 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]">Ủng hộ</a>
+        <a href="#" class="rounded-full bg-arcane-500 px-5 py-2 text-sm font-semibold text-void-950 transition-all duration-300 hover:bg-arcane-400 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]">Ủng hộ</a>
         <button id="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-panel" aria-label="Mở menu" class="relative flex h-10 w-10 items-center justify-center rounded-full border border-void-700/60 text-ink-100 transition-colors hover:border-arcane-400/60 md:hidden">
           <svg id="icon-open" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
           <svg id="icon-close" class="hidden h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg>
@@ -114,6 +224,7 @@ tailwind.config = {
     </div>
 
     <div id="mobile-panel" class="mobile-panel absolute inset-x-4 top-full mt-2 max-h-[75vh] overflow-y-auto rounded-xl border border-void-700/60 bg-void-900/95 p-6 backdrop-blur-xl md:hidden">
+      <button type="button" class="theme-toggle mobile-theme-toggle" data-theme-toggle aria-label="Đổi chế độ sáng/tối" aria-pressed="false" title="Đổi chế độ sáng/tối"><span class="theme-toggle-mark" aria-hidden="true"></span></button>
       <a href="toc.html" class="block py-2 text-sm font-semibold text-ink-100">Mục lục</a>
       <p class="mt-4 text-xs uppercase tracking-widest text-ink-500">Nội dung phụ</p>
       <div class="mt-2 flex flex-col gap-1 border-l border-void-700/60 pl-4">
@@ -124,17 +235,16 @@ tailwind.config = {
       <p class="mt-4 text-xs uppercase tracking-widest text-ink-500">Thông tin</p>
       <div class="mt-2 flex flex-col gap-1 border-l border-void-700/60 pl-4">
         <a href="#" class="py-1.5 text-sm text-ink-300">Bản đồ thế giới</a>
-        <a href="#" class="py-1.5 text-sm text-ink-300">Tiến độ dịch</a>
         <a href="#" class="py-1.5 text-sm text-ink-300">Nội dung bị cắt</a>
         <a href="#" class="py-1.5 text-sm text-ink-300">Quy chuẩn biên tập</a>
         <a href="about.html" class="py-1.5 text-sm text-ink-300">Giới thiệu &amp; Hỏi đáp</a>
       </div>
-      <a href="https://www.patreon.com/WCTranslations" target="_blank" rel="noopener" class="mt-6 block rounded-full bg-arcane-500 px-5 py-2.5 text-center text-sm font-semibold text-void-950">Ủng hộ</a>
+      <a href="#" class="mt-6 block rounded-full bg-arcane-500 px-5 py-2.5 text-center text-sm font-semibold text-void-950">Ủng hộ</a>
     </div>
   </div>
 </header><main id="main-content" class="flex-grow">
   <section class="relative overflow-hidden pt-40 pb-16 sm:pt-48 sm:pb-20">
-    <svg viewBox="0 0 40 40" class="pointer-events-none absolute left-1/2 top-16 -z-10 h-[34rem] w-[34rem] -translate-x-1/2 opacity-[0.05] sm:h-[42rem] sm:w-[42rem]" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#A78BFA" stroke-width="0.5"/><path d="M20 5 L20 35 M5 20 L35 20 M9.9 9.9 L30.1 30.1 M30.1 9.9 L9.9 30.1" stroke="#A78BFA" stroke-width="0.3"/><circle cx="20" cy="20" r="3.5" fill="#A78BFA"/></svg>
+    <svg viewBox="0 0 40 40" class="pointer-events-none absolute left-1/2 top-16 -z-10 h-[34rem] w-[34rem] -translate-x-1/2 opacity-[0.05] sm:h-[42rem] sm:w-[42rem]" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="rgb(var(--arcane-400) / <alpha-value>)" stroke-width="0.5"/><path d="M20 5 L20 35 M5 20 L35 20 M9.9 9.9 L30.1 30.1 M30.1 9.9 L9.9 30.1" stroke="rgb(var(--arcane-400) / <alpha-value>)" stroke-width="0.3"/><circle cx="20" cy="20" r="3.5" fill="rgb(var(--arcane-400) / <alpha-value>)"/></svg>
     <div class="reveal mx-auto max-w-3xl px-6 text-center">
       <h1 class="font-display text-3xl font-extrabold leading-tight text-ink-100 sm:text-4xl md:text-5xl">Quintessence Translation</h1>
       <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -210,7 +320,7 @@ tailwind.config = {
 <a href="arc.html?arc=10" class="reveal group rounded-xl border border-void-700/60 bg-void-900/50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-arcane-400/50 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]">
   <p class="font-display text-3xl font-bold text-arcane-400/80">X</p>
   <h3 class="mt-3 text-base font-semibold text-ink-100">Arc 10: Vương Quốc Sư Tử</h3>
-  <p class="mt-2 text-sm leading-relaxed text-ink-300">Arc mới nhất, vẫn đang được cập nhật theo tiến độ dịch.</p>
+  <p class="mt-2 text-sm leading-relaxed text-ink-300">Arc mới nhất, đang được cập nhật khi có chương mới.</p>
   <p class="mt-4 text-xs font-semibold uppercase tracking-widest text-spectral-400">Đang tiến hành</p>
 </a></div>
   </section>
@@ -219,9 +329,9 @@ tailwind.config = {
   <div class="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-6 py-16 md:grid-cols-5 lg:px-8">
     <div class="reveal col-span-2">
       <span class="font-display text-base font-bold tracking-wide text-ink-100">QUINTESSENCE TRANSLATION</span>
-      <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-300">Dự án dịch fan phi lợi nhuận dành cho độc giả Re:Zero, tập trung vào trải nghiệm đọc rõ ràng, dễ theo dõi và thân thiện với tiếng Việt.</p>
+      <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink-300">Dự án dịch phi lợi nhuận dành cho độc giả Re:Zero Việt Nam.</p>
       <div class="mt-6 flex gap-3">
-        <a href="https://discord.com/invite/MvyNT5g" target="_blank" rel="noopener" aria-label="Discord" class="flex h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-arcane-400/60 hover:text-arcane-300"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M20.3 5.3A18 18 0 0 0 15.8 4l-.3.6a13 13 0 0 1 3.8 1.5 15 15 0 0 0-13 0A13 13 0 0 1 10 4.6L9.7 4a18 18 0 0 0-4.5 1.3C2.4 9 1.7 12.6 2 16.2A18 18 0 0 0 7.4 19l.8-1.3a11 11 0 0 1-1.9-1c.2-.1.3-.2.5-.3a13 13 0 0 0 10.4 0l.5.3c-.6.4-1.2.7-1.9 1l.8 1.3a18 18 0 0 0 5.4-2.8c.4-4.2-.6-7.7-2.7-10.9ZM9 14.6c-.8 0-1.5-.8-1.5-1.7S8.1 11 9 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Zm6 0c-.8 0-1.5-.8-1.5-1.7S14.2 11 15 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Z"/></svg></a>
+        <a href="#" aria-label="Discord" class="flex h-9 w-9 items-center justify-center rounded-full border border-void-700/60 text-ink-300 transition-colors duration-300 hover:border-arcane-400/60 hover:text-arcane-300"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M20.3 5.3A18 18 0 0 0 15.8 4l-.3.6a13 13 0 0 1 3.8 1.5 15 15 0 0 0-13 0A13 13 0 0 1 10 4.6L9.7 4a18 18 0 0 0-4.5 1.3C2.4 9 1.7 12.6 2 16.2A18 18 0 0 0 7.4 19l.8-1.3a11 11 0 0 1-1.9-1c.2-.1.3-.2.5-.3a13 13 0 0 0 10.4 0l.5.3c-.6.4-1.2.7-1.9 1l.8 1.3a18 18 0 0 0 5.4-2.8c.4-4.2-.6-7.7-2.7-10.9ZM9 14.6c-.8 0-1.5-.8-1.5-1.7S8.1 11 9 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Zm6 0c-.8 0-1.5-.8-1.5-1.7S14.2 11 15 11s1.5.8 1.5 1.7-.7 1.9-1.5 1.9Z"/></svg></a>
       </div>
     </div>
     <div class="reveal" style="transition-delay:0.1s">
@@ -235,25 +345,21 @@ tailwind.config = {
     <div class="reveal" style="transition-delay:0.15s">
       <h4 class="mb-4 font-display text-xs font-bold uppercase tracking-widest text-ink-100">Liên kết</h4>
       <ul class="space-y-2 text-sm text-ink-300">
-        <li><a href="#" class="transition-colors hover:text-spectral-300">Re:Zero Wiki</a></li>
-        <li><a href="#" class="transition-colors hover:text-spectral-300">Cộng đồng Re:Zero</a></li>
-        <li><a href="#" class="transition-colors hover:text-spectral-300">Tiến độ dịch</a></li>
+        <li><a href="https://rezero.fandom.com/wiki/Re:Zero_Wiki" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Re:Zero Wiki</a></li>
+        <li><a href="https://www.facebook.com/groups/1199754170205957/" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Cộng đồng Re:Zero Việt Nam</a></li>
       </ul>
     </div>
     <div class="reveal" style="transition-delay:0.2s">
       <h4 class="mb-4 font-display text-xs font-bold uppercase tracking-widest text-ink-100">Hỗ trợ</h4>
       <ul class="space-y-2 text-sm text-ink-300">
-        <li><a href="https://discord.com/invite/MvyNT5g" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Discord</a></li>
-        <li><a href="https://www.patreon.com/WCTranslations" target="_blank" rel="noopener" class="transition-colors hover:text-spectral-300">Ủng hộ</a></li>
+        <li><a href="#" class="transition-colors hover:text-spectral-300">Discord</a></li>
+        <li><a href="#" class="transition-colors hover:text-spectral-300">Ủng hộ</a></li>
         <li><a href="#" class="transition-colors hover:text-spectral-300">Liên hệ / DMCA</a></li>
       </ul>
     </div>
   </div>
   <div class="border-t border-void-700/60">
-    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-6 text-xs text-ink-500 md:flex-row lg:px-8">
-      <p>Re:Zero © Tappei Nagatsuki. Quintessence Translation là dự án fan độc lập, phi thương mại.</p>
-      <p>Được chăm chút cho những độc giả muốn đọc tiếp câu chuyện.</p>
-    </div>
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-6 text-center text-xs text-ink-500 lg:px-8"><p>Re:Zero © Tappei Nagatsuki. QuintessenceTranslations © 2026.</p></div>
   </div>
 </footer><script>
 const revealObserver = new IntersectionObserver((entries) => {
@@ -303,6 +409,30 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+</script>
+<script>
+(function () {
+  const root = document.documentElement;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const storageKey = "qt-theme";
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    if (metaTheme) metaTheme.setAttribute("content", theme === "light" ? "#F9F6EF" : "#07040F");
+    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+      const isLight = theme === "light";
+      button.setAttribute("aria-pressed", String(isLight));
+      button.setAttribute("aria-label", isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng");
+      button.title = isLight ? "Chuyển sang chế độ tối" : "Chuyển sang chế độ sáng";
+    });
+    try { localStorage.setItem(storageKey, theme); } catch (error) {}
+  }
+  setTheme(root.dataset.theme || "dark");
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-theme-toggle]");
+    if (!button) return;
+    setTheme(root.dataset.theme === "light" ? "dark" : "light");
+  });
+})();
 </script>
 </body>
 </html>
