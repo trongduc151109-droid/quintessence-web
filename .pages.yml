@@ -1,0 +1,15 @@
+content:
+  - name: chapters
+    label: Chapters
+    path: content/chapters
+    type: collection
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: slug
+        label: Slug
+        type: string
+      - name: body
+        label: Content
+        type: markdown
