@@ -1,0 +1,10 @@
+{
+  "name": "politicore-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node serve.js",
+    "build": "node build-standalone.mjs"
+  }
+}
